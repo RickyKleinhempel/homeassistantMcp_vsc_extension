@@ -1,0 +1,521 @@
+{
+  "name": "homeassistant-mcp",
+  "displayName": "Home Assistant MCP Tools",
+  "description": "MCP Tools for GitHub Copilot to access Home Assistant REST API",
+  "version": "0.1.0",
+  "publisher": "RickyKleinhempel",
+  "license": "MIT",
+  "icon": "images/icon_ha.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/homeassistant-community/homeassistant-mcp-extension"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "keywords": [
+    "home-assistant",
+    "mcp",
+    "github-copilot",
+    "smart-home",
+    "automation"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languageModelTools": [
+      {
+        "name": "ha_check_api",
+        "displayName": "Home Assistant: Check API",
+        "description": "Check if the Home Assistant API is running and accessible. Returns API status message.",
+        "modelDescription": "Check if Home Assistant API is accessible. Use this to verify the connection before making other calls.",
+        "userDescription": "Check if Home Assistant is accessible",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haCheckApi",
+        "icon": "$(home)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "tags": ["home-assistant", "api", "health-check"]
+      },
+      {
+        "name": "ha_get_config",
+        "displayName": "Home Assistant: Get Configuration",
+        "description": "Get Home Assistant configuration including location, timezone, version, and unit system.",
+        "modelDescription": "Retrieve Home Assistant system configuration including location coordinates, timezone, version, and measurement units.",
+        "userDescription": "Get Home Assistant system configuration",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haConfig",
+        "icon": "$(settings-gear)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "tags": ["home-assistant", "configuration", "system"]
+      },
+      {
+        "name": "ha_get_components",
+        "displayName": "Home Assistant: Get Components",
+        "description": "Get a list of all loaded Home Assistant components and integrations.",
+        "modelDescription": "List all loaded Home Assistant integrations and components. Useful for checking which integrations are available.",
+        "userDescription": "List all Home Assistant integrations",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haComponents",
+        "icon": "$(extensions)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "tags": ["home-assistant", "components", "integrations"]
+      },
+      {
+        "name": "ha_get_states",
+        "displayName": "Home Assistant: Get States",
+        "description": "Get all entity states from Home Assistant. Can filter by domain or search term.",
+        "modelDescription": "Get all entity states. This is the main tool for finding entity IDs. Filter by domain (light, sensor, switch) or search in entity_id/friendly_name.",
+        "userDescription": "Get all entity states from Home Assistant",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haStates",
+        "icon": "$(list-unordered)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Filter by domain (e.g., 'light', 'sensor', 'switch', 'binary_sensor', 'climate')"
+            },
+            "search": {
+              "type": "string",
+              "description": "Search term to filter entities by entity_id or friendly_name (case-insensitive)"
+            }
+          }
+        },
+        "tags": ["home-assistant", "entities", "states"]
+      },
+      {
+        "name": "ha_get_state",
+        "displayName": "Home Assistant: Get Entity State",
+        "description": "Get the current state and attributes of a specific entity.",
+        "modelDescription": "Get detailed state and all attributes for a specific entity by its entity_id.",
+        "userDescription": "Get state of a specific Home Assistant entity",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haState",
+        "icon": "$(symbol-property)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "entity_id": {
+              "type": "string",
+              "description": "The entity ID (e.g., 'light.living_room', 'sensor.temperature')"
+            }
+          },
+          "required": ["entity_id"]
+        },
+        "tags": ["home-assistant", "entity", "state"]
+      },
+      {
+        "name": "ha_get_services",
+        "displayName": "Home Assistant: Get Services",
+        "description": "Get all available services and their parameters. Can filter by domain.",
+        "modelDescription": "List available services (actions) with their parameters. Filter by domain to see services for specific entity types like light.turn_on.",
+        "userDescription": "List available Home Assistant services",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haServices",
+        "icon": "$(symbol-method)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Filter by domain (e.g., 'light', 'switch', 'climate', 'automation')"
+            }
+          }
+        },
+        "tags": ["home-assistant", "services", "actions"]
+      },
+      {
+        "name": "ha_get_events",
+        "displayName": "Home Assistant: Get Events",
+        "description": "Get all available event types in Home Assistant.",
+        "modelDescription": "List all event types for automation triggers (state_changed, call_service, automation_triggered).",
+        "userDescription": "List all Home Assistant event types",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haEvents",
+        "icon": "$(pulse)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "tags": ["home-assistant", "events", "automation"]
+      },
+      {
+        "name": "ha_get_history",
+        "displayName": "Home Assistant: Get History",
+        "description": "Get historical state changes for entities.",
+        "modelDescription": "Retrieve historical state changes. Filter by entity_id and time range. Use minimal_response for large time ranges.",
+        "userDescription": "Get historical state changes for entities",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haHistory",
+        "icon": "$(history)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "timestamp": {
+              "type": "string",
+              "description": "Start time in ISO 8601 format. Defaults to 1 day ago."
+            },
+            "end_time": {
+              "type": "string",
+              "description": "End time in ISO 8601 format. Defaults to now."
+            },
+            "entity_id": {
+              "type": "string",
+              "description": "Filter by entity ID or comma-separated list of entity IDs."
+            },
+            "minimal_response": {
+              "type": "boolean",
+              "description": "Return minimal data (only state and last_changed)."
+            }
+          }
+        },
+        "tags": ["home-assistant", "history", "analytics"]
+      },
+      {
+        "name": "ha_get_logbook",
+        "displayName": "Home Assistant: Get Logbook",
+        "description": "Get logbook entries showing what happened in Home Assistant.",
+        "modelDescription": "Get activity log entries. Useful for debugging and understanding what happened. Filter by entity_id and time range.",
+        "userDescription": "Get Home Assistant activity logbook",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haLogbook",
+        "icon": "$(book)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "timestamp": {
+              "type": "string",
+              "description": "Start time in ISO 8601 format. Defaults to 1 day ago."
+            },
+            "end_time": {
+              "type": "string",
+              "description": "End time in ISO 8601 format. Defaults to now."
+            },
+            "entity_id": {
+              "type": "string",
+              "description": "Filter by entity ID."
+            }
+          }
+        },
+        "tags": ["home-assistant", "logbook", "activity"]
+      },
+      {
+        "name": "ha_get_error_log",
+        "displayName": "Home Assistant: Get Error Log",
+        "description": "Get the Home Assistant error log for troubleshooting.",
+        "modelDescription": "Retrieve error log for troubleshooting issues with integrations or configurations.",
+        "userDescription": "Get Home Assistant error log",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haErrorLog",
+        "icon": "$(warning)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "tags": ["home-assistant", "errors", "debugging"]
+      },
+      {
+        "name": "ha_get_calendars",
+        "displayName": "Home Assistant: Get Calendars",
+        "description": "Get all calendar entities in Home Assistant.",
+        "modelDescription": "List all calendar entities. Use this to find calendar entity IDs before querying calendar events.",
+        "userDescription": "List Home Assistant calendar entities",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haCalendars",
+        "icon": "$(calendar)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "tags": ["home-assistant", "calendar"]
+      },
+      {
+        "name": "ha_get_calendar_events",
+        "displayName": "Home Assistant: Get Calendar Events",
+        "description": "Get events from a specific calendar within a time range.",
+        "modelDescription": "Get calendar events. Requires calendar_entity_id (use ha_get_calendars to find it) and start/end times in ISO 8601 format.",
+        "userDescription": "Get events from a Home Assistant calendar",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haCalendarEvents",
+        "icon": "$(calendar)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "calendar_entity_id": {
+              "type": "string",
+              "description": "Calendar entity ID (e.g., 'calendar.personal')"
+            },
+            "start": {
+              "type": "string",
+              "description": "Start time in ISO 8601 format"
+            },
+            "end": {
+              "type": "string",
+              "description": "End time in ISO 8601 format"
+            }
+          },
+          "required": ["calendar_entity_id", "start", "end"]
+        },
+        "tags": ["home-assistant", "calendar", "events"]
+      },
+      {
+        "name": "ha_call_service",
+        "displayName": "Home Assistant: Call Service",
+        "description": "Call a Home Assistant service/action to control devices (turn on/off lights, adjust climate, etc.).",
+        "modelDescription": "Call a service to control Home Assistant entities. Examples: light.turn_on, switch.toggle, climate.set_temperature. Use ha_get_services to see available services and their parameters.",
+        "userDescription": "Call a service to control Home Assistant devices",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haCallService",
+        "icon": "$(play)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Service domain (e.g., 'light', 'switch', 'climate', 'automation')"
+            },
+            "service": {
+              "type": "string",
+              "description": "Service name (e.g., 'turn_on', 'turn_off', 'toggle', 'set_temperature')"
+            },
+            "service_data": {
+              "type": "object",
+              "description": "Additional service data (e.g., brightness, color_temp, temperature)"
+            },
+            "target": {
+              "type": "object",
+              "description": "Target entities, devices, or areas",
+              "properties": {
+                "entity_id": {
+                  "type": ["string", "array"],
+                  "description": "Entity ID(s) to target"
+                },
+                "device_id": {
+                  "type": ["string", "array"],
+                  "description": "Device ID(s) to target"
+                },
+                "area_id": {
+                  "type": ["string", "array"],
+                  "description": "Area ID(s) to target"
+                }
+              }
+            }
+          },
+          "required": ["domain", "service"]
+        },
+        "tags": ["home-assistant", "service", "action", "control"]
+      },
+      {
+        "name": "ha_fire_event",
+        "displayName": "Home Assistant: Fire Event",
+        "description": "Fire a custom event in Home Assistant for automations to react to.",
+        "modelDescription": "Fire a custom event that automations can listen for. Useful for triggering automations or signaling between systems.",
+        "userDescription": "Fire a custom event in Home Assistant",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haFireEvent",
+        "icon": "$(zap)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "type": "string",
+              "description": "Event type name (e.g., 'my_custom_event')"
+            },
+            "event_data": {
+              "type": "object",
+              "description": "Event data payload"
+            }
+          },
+          "required": ["event_type"]
+        },
+        "tags": ["home-assistant", "event", "automation", "trigger"]
+      },
+      {
+        "name": "ha_set_state",
+        "displayName": "Home Assistant: Set State",
+        "description": "Set or create an entity state in Home Assistant.",
+        "modelDescription": "Set or update an entity's state. Can create virtual sensors or update existing entities. Note: State changes may be overwritten by integrations.",
+        "userDescription": "Set or create an entity state",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haSetState",
+        "icon": "$(edit)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "entity_id": {
+              "type": "string",
+              "description": "Entity ID (e.g., 'sensor.custom_sensor', 'input_text.my_value')"
+            },
+            "state": {
+              "type": "string",
+              "description": "New state value"
+            },
+            "attributes": {
+              "type": "object",
+              "description": "Entity attributes to set (friendly_name, icon, unit_of_measurement, etc.)"
+            }
+          },
+          "required": ["entity_id", "state"]
+        },
+        "tags": ["home-assistant", "state", "entity", "create"]
+      },
+      {
+        "name": "ha_render_template",
+        "displayName": "Home Assistant: Render Template",
+        "description": "Render a Jinja2 template in Home Assistant context.",
+        "modelDescription": "Render a Jinja2 template with access to all Home Assistant states, services, and functions. Useful for testing templates before use in automations.",
+        "userDescription": "Render a Jinja2 template",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haTemplate",
+        "icon": "$(code)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "template": {
+              "type": "string",
+              "description": "Jinja2 template string (e.g., '{{ states.sensor.temperature.state }}')"
+            },
+            "variables": {
+              "type": "object",
+              "description": "Variables to pass to the template"
+            }
+          },
+          "required": ["template"]
+        },
+        "tags": ["home-assistant", "template", "jinja2"]
+      },
+      {
+        "name": "ha_check_config",
+        "displayName": "Home Assistant: Check Configuration",
+        "description": "Check Home Assistant configuration files for errors.",
+        "modelDescription": "Validate Home Assistant YAML configuration files. Returns errors if configuration is invalid.",
+        "userDescription": "Check Home Assistant configuration for errors",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haCheckConfig",
+        "icon": "$(check)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "tags": ["home-assistant", "configuration", "validation"]
+      },
+      {
+        "name": "ha_handle_intent",
+        "displayName": "Home Assistant: Handle Intent",
+        "description": "Handle a conversation/voice assistant intent.",
+        "modelDescription": "Handle a conversation intent like voice commands. Examples: HassTurnOn, HassTurnOff, HassLightSet. Used for natural language control.",
+        "userDescription": "Handle a voice/conversation intent",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haIntent",
+        "icon": "$(mic)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Intent name (e.g., 'HassTurnOn', 'HassTurnOff', 'HassLightSet')"
+            },
+            "data": {
+              "type": "object",
+              "description": "Intent slot values (varies by intent type)"
+            }
+          },
+          "required": ["name"]
+        },
+        "tags": ["home-assistant", "intent", "voice", "conversation"]
+      },
+      {
+        "name": "ha_delete_state",
+        "displayName": "Home Assistant: Delete State",
+        "description": "Delete an entity state from Home Assistant.",
+        "modelDescription": "Remove an entity state from Home Assistant's state machine. Note: Integration-managed entities will be recreated on next update.",
+        "userDescription": "Delete an entity state",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "haDeleteState",
+        "icon": "$(trash)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "entity_id": {
+              "type": "string",
+              "description": "Entity ID to delete (e.g., 'sensor.custom_sensor')"
+            }
+          },
+          "required": ["entity_id"]
+        },
+        "tags": ["home-assistant", "state", "delete"]
+      }
+    ],
+    "configuration": {
+      "title": "Home Assistant MCP",
+      "properties": {
+        "homeassistant-mcp.url": {
+          "type": "string",
+          "default": "http://homeassistant.local:8123",
+          "description": "Home Assistant instance URL (e.g., http://192.168.1.100:8123)"
+        },
+        "homeassistant-mcp.validateSsl": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate SSL certificates when connecting via HTTPS"
+        },
+        "homeassistant-mcp.requestTimeout": {
+          "type": "number",
+          "default": 10000,
+          "description": "Request timeout in milliseconds"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "homeassistant-mcp.setToken",
+        "title": "Home Assistant MCP: Set Access Token"
+      },
+      {
+        "command": "homeassistant-mcp.testConnection",
+        "title": "Home Assistant MCP: Test Connection"
+      },
+      {
+        "command": "homeassistant-mcp.clearToken",
+        "title": "Home Assistant MCP: Clear Access Token"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^2.22.0",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.0"
+  }
+}

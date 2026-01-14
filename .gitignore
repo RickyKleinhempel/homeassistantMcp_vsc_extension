@@ -1,0 +1,32 @@
+# Build output
+out/
+dist/
+
+# Node modules
+node_modules/
+
+# VS Code test environment
+.vscode-test/
+
+# Package files
+*.vsix
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Coverage
+coverage/
