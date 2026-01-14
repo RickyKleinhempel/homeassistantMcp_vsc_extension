@@ -162,4 +162,4 @@ MIT
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or pull request on GitHub.
+Contributions are welcome! Please open an issue or pull request on [GitHub](https://github.com/RickyKleinhempel/homeassistantMcp_vsc_extension).

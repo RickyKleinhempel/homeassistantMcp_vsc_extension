@@ -8,7 +8,7 @@
   "icon": "images/icon_ha.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/homeassistant-community/homeassistant-mcp-extension"
+    "url": "https://github.com/RickyKleinhempel/homeassistantMcp_vsc_extension"
   },
   "engines": {
     "vscode": "^1.95.0"
