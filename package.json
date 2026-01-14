@@ -2,7 +2,7 @@
   "name": "homeassistant-mcp",
   "displayName": "Home Assistant MCP Tools",
   "description": "MCP Tools for GitHub Copilot to access Home Assistant REST API",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "RickyKleinhempel",
   "license": "MIT",
   "icon": "images/icon_ha.png",
