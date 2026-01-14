@@ -144,7 +144,7 @@ export class ToolProvider {
     toolDef: ToolDefinition,
     client: HomeAssistantClient
   ): vscode.Disposable {
-    // Create a tool implementation that only has the invoke method
+    // Create a tool implementation with invoke and optional prepareInvocation
     // The metadata (description, inputSchema) comes from package.json languageModelTools
     const tool: vscode.LanguageModelTool<Record<string, unknown>> = {
       invoke: async (
@@ -178,7 +178,46 @@ export class ToolProvider {
       },
     };
 
+    // Add prepareInvocation for tools that require confirmation
+    if (toolDef.requiresConfirmation) {
+      tool.prepareInvocation = (
+        options: vscode.LanguageModelToolInvocationPrepareOptions<Record<string, unknown>>,
+        _token: vscode.CancellationToken
+      ): vscode.PreparedToolInvocation => {
+        const params = options.input ?? {};
+        const message = this.buildConfirmationMessage(toolDef, params);
+        
+        return {
+          invocationMessage: `Executing ${toolDef.displayName}...`,
+          confirmationMessages: {
+            title: `Confirm: ${toolDef.displayName}`,
+            message: message,
+          },
+        };
+      };
+    }
+
     return vscode.lm.registerTool(toolDef.name, tool);
+  }
+
+  /**
+   * Build a confirmation message for a tool invocation
+   */
+  private buildConfirmationMessage(
+    toolDef: ToolDefinition,
+    params: Record<string, unknown>
+  ): string {
+    if (toolDef.confirmationMessage) {
+      return toolDef.confirmationMessage;
+    }
+
+    // Build context-aware message based on tool and parameters
+    const paramSummary = Object.entries(params)
+      .filter(([_, v]) => v !== undefined && v !== null)
+      .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : String(v)}`)
+      .join('\n');
+
+    return `This action will modify your Home Assistant instance.\n\n**Tool:** ${toolDef.displayName}\n${paramSummary ? `\n**Parameters:**\n${paramSummary}` : ''}\n\nDo you want to continue?`;
   }
 
   /**

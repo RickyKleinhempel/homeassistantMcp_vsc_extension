@@ -12,6 +12,7 @@ export const callServiceTool: ToolDefinition = {
   name: 'ha_call_service',
   displayName: 'Home Assistant: Call Service',
   description: 'Call a Home Assistant service/action to control devices',
+  requiresConfirmation: true,
   inputSchema: {
     type: 'object',
     properties: {

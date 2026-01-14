@@ -11,6 +11,7 @@ export const deleteStateTool: ToolDefinition = {
   name: 'ha_delete_state',
   displayName: 'Home Assistant: Delete State',
   description: 'Delete an entity state from Home Assistant',
+  requiresConfirmation: true,
   inputSchema: {
     type: 'object',
     properties: {

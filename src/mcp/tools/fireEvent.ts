@@ -11,6 +11,7 @@ export const fireEventTool: ToolDefinition = {
   name: 'ha_fire_event',
   displayName: 'Home Assistant: Fire Event',
   description: 'Fire a custom event in Home Assistant',
+  requiresConfirmation: true,
   inputSchema: {
     type: 'object',
     properties: {

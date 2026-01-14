@@ -152,6 +152,15 @@ export interface ToolDefinition {
   displayName: string;
   description: string;
   inputSchema: object;
+  /**
+   * If true, user will be asked for confirmation before execution
+   * Should be set for tools that modify state (POST/DELETE)
+   */
+  requiresConfirmation?: boolean;
+  /**
+   * Custom confirmation message (optional)
+   */
+  confirmationMessage?: string;
   invoke: (
     client: HomeAssistantClient,
     params: Record<string, unknown>,

@@ -12,6 +12,7 @@ export const handleIntentTool: ToolDefinition = {
   name: 'ha_handle_intent',
   displayName: 'Home Assistant: Handle Intent',
   description: 'Handle a conversation intent in Home Assistant',
+  requiresConfirmation: true,
   inputSchema: {
     type: 'object',
     properties: {

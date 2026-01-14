@@ -11,6 +11,7 @@ export const setStateTool: ToolDefinition = {
   name: 'ha_set_state',
   displayName: 'Home Assistant: Set State',
   description: 'Set or update an entity state in Home Assistant',
+  requiresConfirmation: true,
   inputSchema: {
     type: 'object',
     properties: {
