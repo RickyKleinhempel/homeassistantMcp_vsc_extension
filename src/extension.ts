@@ -4,16 +4,41 @@
  */
 
 import * as vscode from 'vscode';
+import { execFile } from 'child_process';
 import { SettingsManager } from './config/settings';
 import { ToolProvider } from './mcp/toolProvider';
 
 let toolProvider: ToolProvider | undefined;
 
 /**
+ * Check if Node.js is installed and available on the system PATH
+ */
+function checkNodeInstalled(): Promise<boolean> {
+  return new Promise((resolve) => {
+    execFile('node', ['--version'], (error) => {
+      resolve(!error);
+    });
+  });
+}
+
+/**
  * Extension activation
  */
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   console.log('Home Assistant MCP extension is activating...');
+
+  // Check Node.js availability
+  const nodeInstalled = await checkNodeInstalled();
+  if (!nodeInstalled) {
+    const action = await vscode.window.showWarningMessage(
+      'Home Assistant MCP: Node.js is not installed or not found in PATH. This extension requires Node.js to function properly.',
+      'Download Node.js'
+    );
+    if (action === 'Download Node.js') {
+      void vscode.env.openExternal(vscode.Uri.parse('https://nodejs.org'));
+    }
+    return;
+  }
 
   // Initialize settings manager
   const settingsManager = new SettingsManager(context);
